@@ -1,38 +1,58 @@
-const mysql = require("mysql");
-const cTable = require("console.table");
+const dotenv = require("dotenv");
+const path = require("path");
+require("console.table");
 
-console.table([
-  {
-    name: "foo",
-    age: 10
-  },
-  {
-    name: "bar",
-    age: 20
-  }
-]);
+dotenv.config({ path: path.join(__dirname, "config.env") });
 
-const table = cTable.getTable([
-  {
-    name: "foo2",
-    age: 10
-  },
-  {
-    name: "bar2",
-    age: 20
-  }
-]);
-console.log(table);
+// MySQL connection
+const connection = require("./dev/db/db");
 
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "test",
-  password: "test1234",
-  database: "hr_tracker"
-});
+// Inquirer
+const {
+  mainQ,
+  addDepartmentQ,
+  addEmployeeQ,
+  addRoleQ,
+  getAnswer
+} = require("./dev/inquirer");
 
-connection.connect(err => {
-  if (err) throw err;
+const init = async () => {
+  // Database connection
+  // const connection = db();
 
-  console.log("connected...");
-});
+  connection.query("SELECT * FROM department", (err, res) => {
+    console.log(res);
+    console.table(res);
+  });
+
+  connection.end();
+  // const answers = await getAnswer(questions);
+  // console.log(answers);
+};
+
+// refresh db, bring roles, employees, department
+
+init();
+
+// console.table([
+//   {
+//     name: "foo",
+//     age: 10
+//   },
+//   {
+//     name: "bar",
+//     age: 20
+//   }
+// ]);
+
+// const table = cTable.getTable([
+//   {
+//     name: "foo2",
+//     age: 10
+//   },
+//   {
+//     name: "bar2",
+//     age: 20
+//   }
+// ]);
+// console.log(table);
