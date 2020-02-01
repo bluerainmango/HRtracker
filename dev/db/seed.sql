@@ -1,7 +1,6 @@
 -- DELETE FROM department;
 -- DELETE FROM role;
 -- DELETE FROM employee;
-
 INSERT INTO department(name) VALUES ("administrative"),("marketing"),("sales"),("development");
 
 
@@ -17,7 +16,13 @@ VALUES ("administration manager", 15000, 1),
 ("frontend developer", 6000, 4),
 ("intern", 5000, 4);
 
+-- INSERT INTO employee (first_name, last_name, role_id, manager_id)
+-- VALUES("Tom", "Dodd", 1, null),("emily", "yu", 2, null);
+
+-- INSERT INTO employee (first_name, last_name, role_id, manager_id)VALUES ("john","cho","4","1");
+
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES("Tom", "Dodd", 1, null) 
+VALUES("Tom", "Dodd", 1, null),("emily", "yu", 2, null),("john","cho","4","1")
+
  
 

@@ -20,11 +20,12 @@ exports.mainQ = [
       "Add an employee",
       "Add a department",
       "Add a role",
-      "Update employee role",
-      "Update employee manager",
+      "Update employee's role",
+      "Update employee's manager",
       "Delete an employee",
       "Delete a department",
-      "Delete a role"
+      "Delete a role",
+      "Check the total salaries of each department"
     ]
   }
 ];
@@ -58,7 +59,7 @@ exports.addDepartmentQ = [
   {
     type: "input",
     name: "department",
-    message: "What is the department's name?"
+    message: "What is the new department's name?"
   }
 ];
 
@@ -66,7 +67,7 @@ exports.addRoleQ = [
   {
     type: "input",
     name: "title",
-    message: "What is this role's name?"
+    message: "What role do you want to newly add?"
   },
   {
     type: "input",
@@ -77,6 +78,60 @@ exports.addRoleQ = [
     type: "list",
     name: "department",
     message: "What department does this role belong to?",
+    choices: []
+  }
+];
+
+exports.updateRoleQ = [
+  {
+    type: "list",
+    name: "employee",
+    message: "who's role do you want to change?",
+    choices: []
+  },
+  {
+    type: "list",
+    name: "newRole",
+    message: "What is this employee's new role?",
+    choices: []
+  }
+];
+
+exports.updateManagerQ = [
+  {
+    type: "list",
+    name: "employee",
+    message: "whos manager do you want to change?",
+    choices: []
+  },
+  {
+    type: "list",
+    name: "newManager",
+    message: "who is the new manager of this employee?",
+    choices: []
+  }
+];
+exports.deleteEmployeeQ = [
+  {
+    type: "list",
+    name: "employee",
+    message: "who do you want to delete?",
+    choices: []
+  }
+];
+exports.deleteDepartmentQ = [
+  {
+    type: "list",
+    name: "department",
+    message: "Which department do you want to delete?",
+    choices: []
+  }
+];
+exports.deleteRoleQ = [
+  {
+    type: "list",
+    name: "role",
+    message: "Which role do you want to delete?",
     choices: []
   }
 ];

@@ -14,6 +14,11 @@ const {
   addDepartmentQ,
   addEmployeeQ,
   addRoleQ,
+  updateRoleQ,
+  updateManagerQ,
+  deleteEmployeeQ,
+  deleteDepartmentQ,
+  deleteRoleQ,
   getAnswer
 } = require("./dev/inquirer");
 
@@ -23,54 +28,63 @@ const init = async () => {
 
   const db = createDB();
   const roles = await db.query("SELECT title FROM role");
-  const managers = await db.query("SELECT first_name, last_name FROM employee");
+  const employees = await db.query(
+    "SELECT CONCAT(first_name, ' ' , last_name) AS name FROM employee"
+  );
+  const departments = await db.query(
+    "SELECT name AS department FROM department"
+  );
 
   roles.forEach(el => {
     addEmployeeQ[2].choices.push(el.title);
+    updateRoleQ[1].choices.push(el.title);
+    deleteRoleQ[0].choices.push(el.title);
   });
 
-  managers.forEach(el => {
-    addEmployeeQ[3].choices.push(`${el.first_name} ${el.last_name}`);
+  employees.forEach(el => {
+    addEmployeeQ[3].choices.push(el.name);
+    updateRoleQ[0].choices.push(el.name);
+    updateManagerQ[0].choices.push(el.name);
+    deleteEmployeeQ[0].choices.push(el.name);
   });
 
-  const add = await getAnswer(addEmployeeQ);
-  console.log(add);
+  //! updateRole! 2 questions : need to ommit the current role
+  updateRoleQ[1].choices = async answers => {
+    const qry = `SELECT title FROM role LEFT JOIN employee ON role.id = employee.role_id WHERE CONCAT(first_name, ' ', last_name) != ? || CONCAT(first_name, ' ', last_name) IS NULL;`;
 
-  // console.log(result);
+    const rows = await db.query(qry, answers.employee);
+    const rolesArr = rows.map(row => {
+      return row.title;
+    });
 
-  //   "SELECT title FROM role; SELECT first_name, last_name FROM employee; SELECT name FROM department",
-  //   async (err, res) => {
-  //     if (err) throw err;
+    return rolesArr;
+  };
 
-  //     console.log(res);
+  // Show all employees except himself/herself.
+  updateManagerQ[1].choices = answers => {
+    return updateManagerQ[0].choices.filter(el => el !== answers.employee);
+  };
 
-  //     res[0].forEach(el => {
-  //       addEmployeeQ[2].choices.push(el.title);
-  //     });
+  departments.forEach(el => {
+    addRoleQ[2].choices.push(el.department);
+    deleteDepartmentQ[0].choices.push(el.department);
+  });
 
-  //     res[1].forEach(el => {
-  //       addEmployeeQ[3].choices.push(`${el.first_name} ${el.last_name}`);
-  //     });
+  // const addEmployeeAnswers = await getAnswer(addEmployeeQ);
+  // const addRoleAnswers = await getAnswer(addRoleQ);
+  const updateRoleAnswers = await getAnswer(updateRoleQ);
+  // const updateManagerAnswers = await getAnswer(updateManagerQ);
+  // const deleteEmployeeAnswers = await getAnswer(deleteEmployeeQ);
+  // const deleteDepartmentAnswers = await getAnswer(deleteDepartmentQ);
+  // const deleteRoleAnswers = await getAnswer(deleteRoleQ);
 
-  //     res[2].forEach(el => {
-  //       addRoleQ[2].choices.push(el.name);
-  //     });
-
-  //     await getAnswer(addEmployeeQ);
-  //   }
-  // );
-  // connection.query("SELECT title FROM role", (err, res) => {
-  //   if (err) throw err;
-  //   addEmployeeQ[2].choices = res;
-  // });
-
-  // connection.query("SELECT first_name, last_name FROM employee", (err, res) => {
-  //   if (err) throw err;
-  //   addEmployeeQ[3].choices = res;
-  // });
-  // 2 inquier
-
-  // await getAnswer(mainQ);
+  // console.log(addEmployeeAnswers);
+  // console.log(addRoleAnswers);
+  console.log(updateRoleAnswers);
+  // console.log(updateManagerAnswers);
+  // console.log(deleteEmployeeAnswers);
+  // console.log(deleteDepartmentAnswers);
+  // console.log(deleteRoleAnswers);
 
   db.end();
 };
