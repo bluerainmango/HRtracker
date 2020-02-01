@@ -7,6 +7,7 @@ const query = require("./db/query");
 exports.refreshChoices = async () => {
   const db = createDB();
 
+  // 1. Bring data from DB
   const roles = await db.getQuery("SELECT title FROM role");
   const employees = await db.getQuery(
     "SELECT CONCAT(first_name, ' ' , last_name) AS name FROM employee"
@@ -15,10 +16,11 @@ exports.refreshChoices = async () => {
     "SELECT name AS department FROM department"
   );
 
-  //* Fill each question's choices with data
+  //2. Fill each question's choices with data
   roles.forEach(el => {
     questions.addEmployeeQ[2].choices.push(el.title);
-    questions.updateRoleQ[1].choices.push(el.title);
+    // console.log("updateRole: ", questions.updateRoleQ[1].choices);
+    // questions.updateRoleQ[1].choices.push(el.title);
     questions.deleteRoleQ[0].choices.push(el.title);
   });
 
@@ -33,6 +35,10 @@ exports.refreshChoices = async () => {
     questions.addRoleQ[2].choices.push(el.department);
     questions.deleteDepartmentQ[0].choices.push(el.department);
   });
+
+  //* [Special case] addEmployeeQ - 3rd question's choices
+  // Add none.
+  questions.addEmployeeQ[2].choices.unshift("none");
 
   //* [Special case] updateRoleQ - 2nd question's choices func
   // Show all roles except current person's role.
@@ -49,7 +55,9 @@ exports.refreshChoices = async () => {
   //* [Special case] updateManagerQ - 2nd question's choice func
   // Show all employees except himself/herself.
   questions.updateManagerQ[1].choices = answers => {
-    return updateManagerQ[0].choices.filter(el => el !== answers.employee);
+    return questions.updateManagerQ[0].choices.filter(
+      el => el !== answers.employee
+    );
   };
 
   db.end();
@@ -65,7 +73,7 @@ const questions = {
         "View all employees",
         "View all departments",
         "View all roles",
-        "View all employees by departmnet",
+        "View all employees by department",
         "View all employees by manager",
         "Add an employee",
         "Add a department",
@@ -75,7 +83,8 @@ const questions = {
         "Delete an employee",
         "Delete a department",
         "Delete a role",
-        "Check the total salaries of each department"
+        "Check the total salaries of each department",
+        "Exit"
       ]
     }
   ],

@@ -14,30 +14,55 @@ dotenv.config({ path: path.join(__dirname, "config.env") });
 const { refreshChoices, getAnswer } = require("./dev/inquirer");
 
 //* FUNCTION : Get query and print it in table
-const showTable = async (db, query) => {
+const showTable = async (db, query, title) => {
   const result = await db.getQuery(query);
-  console.table(result);
+  // console.log("query: ", query);
+  // console.log("result: ", result);
+  console.table(title.toUpperCase(), result);
   db.end();
 };
 
 //* FUCTION : init
 const init = async () => {
-  // cycle
-  // 1 refresh db
+  let loop = true;
 
-  await refreshChoices();
-  const answerTo = await getAnswer("main");
+  // Dynamically fill questions' choices with latest data
+  do {
+    await refreshChoices();
+    const answerTo = await getAnswer("main");
 
-  const db = createDB();
+    // Connect DB for query
+    const db = createDB();
 
-  switch (answerTo.mainQuestion) {
-    case "View all employees":
-      showTable(db, query.getAllEmployees);
+    // According to answer of main question, print query or conseuqent questions.
+    switch (answerTo.mainQuestion) {
+      case "View all employees":
+        showTable(db, query.getAllEmployees, "View all employees");
+        break;
 
-      break;
-    case "View all departments":
-      break;
-  }
+      case "View all departments":
+        showTable(db, query.getAllDepartments, "View all departments");
+        break;
+
+      case "View all roles":
+        showTable(db, query.getAllRoles);
+        break;
+
+      case "View all employees by department":
+        showTable(db, query.getAllEmployeesByDept);
+        break;
+
+      case "View all employees by manager":
+        showTable(db, query.getAllRoles);
+        break;
+
+      case "Exit":
+        loop = false;
+        db.end();
+        break;
+    }
+  } while (loop);
+
   // const addEmployeeAnswers = await getAnswer(addEmployeeQ);
   // const addRoleAnswers = await getAnswer(addRoleQ);
   // const updateRoleAnswers = await getAnswer(updateRoleQ);
@@ -54,29 +79,4 @@ const init = async () => {
   // console.log(deleteRoleAnswers);
 };
 
-// refresh db, bring roles, employees, department
-
 init();
-
-// console.table([
-//   {
-//     name: "foo",
-//     age: 10
-//   },
-//   {
-//     name: "bar",
-//     age: 20
-//   }
-// ]);
-
-// const table = cTable.getTable([
-//   {
-//     name: "foo2",
-//     age: 10
-//   },
-//   {
-//     name: "bar2",
-//     age: 20
-//   }
-// ]);
-// console.log(table);
