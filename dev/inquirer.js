@@ -1,16 +1,17 @@
 const inquirer = require("inquirer");
 
 const createDB = require("./db/db");
+const query = require("./db/query");
 
 // Dynamically fill questions' choices with data
 exports.refreshChoices = async () => {
   const db = createDB();
 
-  const roles = await db.query("SELECT title FROM role");
-  const employees = await db.query(
+  const roles = await db.getQuery("SELECT title FROM role");
+  const employees = await db.getQuery(
     "SELECT CONCAT(first_name, ' ' , last_name) AS name FROM employee"
   );
-  const departments = await db.query(
+  const departments = await db.getQuery(
     "SELECT name AS department FROM department"
   );
 
@@ -33,11 +34,11 @@ exports.refreshChoices = async () => {
     questions.deleteDepartmentQ[0].choices.push(el.department);
   });
 
-  //*[Special case] updateRoleQ - 2nd question : Show all roles except current person's role.
+  //* [Special case] updateRoleQ - 2nd question's choices func
+  // Show all roles except current person's role.
   questions.updateRoleQ[1].choices = async answers => {
-    const qry = `SELECT title FROM role LEFT JOIN employee ON role.id = employee.role_id WHERE CONCAT(first_name, ' ', last_name) != ? || CONCAT(first_name, ' ', last_name) IS NULL;`;
+    const rows = await db.getQuery(query.getAllRolesExcept, answers.employee);
 
-    const rows = await db.query(qry, answers.employee);
     const rolesArr = rows.map(row => {
       return row.title;
     });
@@ -45,7 +46,8 @@ exports.refreshChoices = async () => {
     return rolesArr;
   };
 
-  //*[Special case] updateManagerQ - 2nd question: Show all employees except himself/herself.
+  //* [Special case] updateManagerQ - 2nd question's choice func
+  // Show all employees except himself/herself.
   questions.updateManagerQ[1].choices = answers => {
     return updateManagerQ[0].choices.filter(el => el !== answers.employee);
   };
