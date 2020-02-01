@@ -14,11 +14,11 @@ dotenv.config({ path: path.join(__dirname, "config.env") });
 const { refreshChoices, getAnswer } = require("./dev/inquirer");
 
 //* FUNCTION : Get query and print it in table
-const showTable = async (db, query, title) => {
+const showTable = async (db, query) => {
   const result = await db.getQuery(query);
   // console.log("query: ", query);
   // console.log("result: ", result);
-  console.table(title.toUpperCase(), result);
+  console.table("\n", result);
   db.end();
 };
 
@@ -37,23 +37,23 @@ const init = async () => {
     // According to answer of main question, print query or conseuqent questions.
     switch (answerTo.mainQuestion) {
       case "View all employees":
-        showTable(db, query.getAllEmployees, "View all employees");
+        await showTable(db, query.getAllEmployees);
         break;
 
       case "View all departments":
-        showTable(db, query.getAllDepartments, "View all departments");
+        await showTable(db, query.getAllDepartments);
         break;
 
       case "View all roles":
-        showTable(db, query.getAllRoles);
+        await showTable(db, query.getAllRoles);
         break;
 
       case "View all employees by department":
-        showTable(db, query.getAllEmployeesByDept);
+        await showTable(db, query.getAllEmployeesByDept);
         break;
 
       case "View all employees by manager":
-        showTable(db, query.getAllRoles);
+        await showTable(db, query.getAllRoles);
         break;
 
       case "Exit":
