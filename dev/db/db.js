@@ -22,8 +22,8 @@ function createDB() {
     query(qry, args) {
       return promisify(connection.query).call(connection, qry, args);
     },
-    close() {
-      return promisify(connection.close).call(connection);
+    end() {
+      return promisify(connection.end).call(connection);
     }
   };
 }
