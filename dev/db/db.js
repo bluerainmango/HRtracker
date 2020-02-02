@@ -11,10 +11,7 @@ function createDB() {
   });
 
   connection.connect(err => {
-    if (err) {
-      console.err("err connecting: ", +err.stack);
-      return;
-    }
+    if (err) throw err;
     // console.log("connected as id " + connection.threadId);
   });
 

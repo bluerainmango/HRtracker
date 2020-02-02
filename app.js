@@ -53,7 +53,11 @@ const init = async () => {
         break;
 
       case "View all employees by manager":
-        await showTable(db, query.getAllRoles);
+        await showTable(db, query.getAllEmployeesByManager);
+        break;
+
+      case "View all employees by manager":
+        await showTable(db, query.getAllEmployeesByManager);
         break;
 
       case "Exit":
