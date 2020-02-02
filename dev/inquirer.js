@@ -50,8 +50,9 @@ exports.refreshChoices = async () => {
     const rolesArr = rows.map(row => {
       return row.title;
     });
-
-    return rolesArr;
+    console.log("roles: ", rows);
+    // Delete duplicated roles
+    return Array.from(new Set(rolesArr));
   };
 
   //* [Special case] updateManagerQ - 2nd question's choice func
@@ -62,7 +63,7 @@ exports.refreshChoices = async () => {
     );
   };
 
-  db.end();
+  // db.end();
 };
 
 const questions = {
@@ -156,7 +157,7 @@ const questions = {
   updateManagerQ: [
     {
       type: "list",
-      name: "employee",
+      name: "employeeToUpdateManager",
       message: "whos manager do you want to change?",
       choices: []
     },
@@ -213,7 +214,7 @@ exports.getAnswer = async category => {
       q = questions.addDepartmentQ;
       break;
 
-    case "updateRole":
+    case "updateEmployeeRole":
       q = questions.updateRoleQ;
       break;
 

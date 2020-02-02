@@ -16,7 +16,7 @@ const { refreshChoices, getAnswer } = require("./dev/inquirer");
 //* FUNCTION : Get query and print it in table
 const showTable = async (db, choice, query, args) => {
   const result = await db.query(query, args);
-
+  console.log("result", result);
   switch (choice.split(" ")[0]) {
     case "View":
       console.table("\n", result);
@@ -35,10 +35,9 @@ const showTable = async (db, choice, query, args) => {
       break;
 
     default:
+      db.end();
       break;
   }
-
-  db.end();
 };
 
 //* FUCTION : init
@@ -77,19 +76,41 @@ const init = async () => {
 
       case "Add an employee":
         const { fname, lname, role, manager } = await getAnswer("addEmployee");
-
         await showTable(db, mainQ, query.addEmployee, [
           fname,
           lname,
           role,
           manager
         ]);
+
         break;
 
       case "Add a department":
         const { department } = await getAnswer("addDepartment");
-
         await showTable(db, mainQ, query.addDepartment, [department]);
+
+        break;
+
+      case "Update employee's role":
+        const { employee, newRole } = await getAnswer("updateEmployeeRole");
+        await showTable(db, mainQ, query.updateEmployeeRole, [
+          newRole,
+          employee
+        ]);
+
+        break;
+
+      case "Update employee's manager":
+        const { employeeToUpdateManager, newManager } = await getAnswer(
+          "updateManager"
+        );
+
+        console.log("answers", employeeToUpdateManager, newManager);
+        await showTable(db, mainQ, query.updateEmployeeManager, [
+          newManager,
+          employeeToUpdateManager
+        ]);
+
         break;
 
       case "Exit":

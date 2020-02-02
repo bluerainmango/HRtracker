@@ -1,6 +1,18 @@
 module.exports = (() => {
   return {
-    getAllRolesExcept: `SELECT title FROM role LEFT JOIN employee ON role.id = employee.role_id WHERE CONCAT(first_name, ' ', last_name) != ? || CONCAT(first_name, ' ', last_name) IS NULL`,
+    getAllRolesExcept: `SELECT 
+        title
+    FROM
+        role
+    WHERE
+        title != (SELECT 
+                title
+            FROM
+                employee
+                    LEFT JOIN
+                role ON role.id = employee.role_id
+            WHERE
+                CONCAT(employee.first_name, ' ', last_name) = ?)`,
     getAllEmployees: `SELECT 
             e.id,
             e.first_name,
@@ -38,7 +50,6 @@ module.exports = (() => {
         department ON department.id = role.department_id ORDER BY department`,
     getAllEmployeesByManager: `SELECT 
         IFNULL(CONCAT(m.first_name, ' ', m.last_name),"") AS manager,
-        department.name AS department,
         e.first_name,
         e.last_name,
         role.title,
@@ -53,7 +64,9 @@ module.exports = (() => {
         department ON department.id = role.department_id
     ORDER BY CASE when manager = "" THEN 1 ELSE 0 END, manager`,
     addEmployee: `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-    VALUES (?, ?, (SELECT id FROM role WHERE title = ?),(SELECT id FROM (SELECT * FROM employee) AS copiedEmployee WHERE CONCAT(first_name, " ", last_name) = ?));`,
-    addDepartment: `INSERT INTO department SET name = ?`
+    VALUES (?, ?, (SELECT id FROM role WHERE title = ?),(SELECT id FROM (SELECT * FROM employee) AS copiedEmployee WHERE CONCAT(first_name, " ", last_name) = ?))`,
+    addDepartment: `INSERT INTO department SET name = ?`,
+    updateEmployeeRole: `UPDATE employee SET role_id = (SELECT id FROM role WHERE title = ?) WHERE CONCAT(first_name, " ", last_name) = ?`,
+    updateEmployeeManager: `UPDATE employee SET manager_id = (SELECT id FROM (SELECT * FROM employee) AS copied WHERE CONCAT(first_name, " ", last_name) = ?) WHERE CONCAT(first_name, " ", last_name) = ?`
   };
 })();
