@@ -19,7 +19,7 @@ const { refreshChoices, getAnswer } = require("./dev/inquirer");
 const init = async () => {
   let loop = true;
 
-  // APP Logo print
+  //* APP Logo print
   console.log(
     figlet.textSync(" HR Tracker", {
       font: "ANSI Shadow",
@@ -28,15 +28,18 @@ const init = async () => {
     })
   );
 
-  // Dynamically fill questions' choices with latest data
+  //* Do ~ While loop
   do {
+    // 1. Dynamically fill questions' choices with latest data in every loop
     await refreshChoices();
+
+    // 2. Get answer to the main question
     const { mainQ } = await getAnswer("main");
 
-    // Connect DB and import connection.query(), connection.end() methods
+    // 3. Connect DB and import connection.query(), connection.end() methods
     const db = createDB();
 
-    // Based on the answer to the main question, print query or continue to following questions.
+    // 4. Based on the mainQ answer, print a query result right away or continue to following questions.
     switch (mainQ) {
       case "View all employees":
         await showTable(db, mainQ, query.getAllEmployees);
@@ -59,7 +62,10 @@ const init = async () => {
         break;
 
       case "Add an employee":
+        // 1. Get additional answers to related questions
         const { fname, lname, role, manager } = await getAnswer("addEmployee");
+
+        // 2. Print
         await showTable(db, mainQ, query.addEmployee, [
           fname,
           lname,
@@ -124,30 +130,22 @@ const init = async () => {
   } while (loop);
 };
 
-//! UTILL FUNCTION : Get query result and print it in console table
+//! UTILL FUNCTION : Get a query result and print it
 const showTable = async (db, choice, query, args) => {
   const result = await db.query(query, args);
 
-  switch (choice.split(" ")[0]) {
-    case "View":
-      console.table("\n", result);
-      break;
+  const firstWordOfAnswer = choice.split(" ")[0];
 
-    case "Add":
-      console.log("👍 Successfully Added!");
-      break;
+  // CASE 1. View & Check : print a query result in table
+  if (firstWordOfAnswer === "View" || firstWordOfAnswer === "Check") {
+    console.table("\n", result);
+  } else {
+    // CASE 2. Add, Update, Delete : no print a query result but general alert
+    const action = firstWordOfAnswer.endsWith("e")
+      ? firstWordOfAnswer + "d"
+      : firstWordOfAnswer + "ed";
 
-    case "Update":
-      console.log("👍 Successfully Updated!");
-      break;
-
-    case "Delete":
-      console.log("👍 Successfully Deleted!");
-      break;
-
-    case "Check":
-      console.table("\n", result);
-      break;
+    console.log(`👍 Successfully ${action}!`);
   }
 };
 

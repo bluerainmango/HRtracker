@@ -3,11 +3,13 @@ const inquirer = require("inquirer");
 const createDB = require("./db/db");
 const query = require("./db/query");
 
-//! [Choice refresher] Dynamically fill questions' choices with data at every main question loop
+//! [Choice refresher]
+//! : Dynamically fill questions' choices with data
 exports.refreshChoices = async () => {
+  // 1. Connect DB and import connection.query(), connection.end() methods
   const db = createDB();
 
-  // 1. Bring data from DB
+  // 2. Bring data from DB for all questions' choices
   const roles = await db.query("SELECT title FROM role");
   const employees = await db.query(
     "SELECT CONCAT(first_name, ' ' , last_name) AS name FROM employee"
@@ -16,7 +18,7 @@ exports.refreshChoices = async () => {
     "SELECT name AS department FROM department"
   );
 
-  // 2. Fill each question's choices with data
+  // 3. Fill each question's choices with data
   roles.forEach(el => {
     questions.addEmployeeQ[2].choices.push(el.title);
     questions.deleteRoleQ[0].choices.push(el.title);
@@ -35,13 +37,13 @@ exports.refreshChoices = async () => {
   });
 
   //* [Special case] addEmployeeQ - 3rd question's choices
-  // : Add "none".
+  // : Add "none" choice for 'manager_id'.
   if (!questions.addEmployeeQ[3].choices.includes("none")) {
     questions.addEmployeeQ[3].choices.unshift("none");
   }
 
   //* [Special case] updateRoleQ - 2nd question's choices func
-  // : Show all roles except the current person's role.
+  // : Show all roles except the person's current role.
   questions.updateRoleQ[1].choices = async answers => {
     const rows = await db.query(query.getAllRolesExcept, answers.employee);
 
@@ -54,11 +56,19 @@ exports.refreshChoices = async () => {
   };
 
   //* [Special case] updateManagerQ - 2nd question's choice func
-  // : Show all employees except himself/herself.
+  // : Show all employees except himself/herself and include "none".
   questions.updateManagerQ[1].choices = answers => {
-    return questions.updateManagerQ[0].choices.filter(
-      el => el !== answers.employee
+    // 1. Delete himself/herself from employees array
+    const employeesExceptMe = questions.updateManagerQ[0].choices.filter(
+      el => el !== answers.employeeToUpdateManager
     );
+
+    // 2. Include "none"
+    if (!employeesExceptMe.includes("none")) {
+      employeesExceptMe.unshift("none");
+    }
+
+    return employeesExceptMe;
   };
 
   // db.end();
@@ -94,12 +104,20 @@ const questions = {
     {
       type: "input",
       name: "fname",
-      message: "What is this employee's first name?"
+      message: "What is this employee's first name?",
+      validate: nameValidator,
+      filter: input => {
+        return input.trim();
+      }
     },
     {
       type: "input",
       name: "lname",
-      message: "What is this employee's last name?"
+      message: "What is this employee's last name?",
+      validate: nameValidator,
+      filter: input => {
+        return input.trim();
+      }
     },
     {
       type: "list",
@@ -118,19 +136,31 @@ const questions = {
     {
       type: "input",
       name: "department",
-      message: "What is the new department's name?"
+      message: "What is the new department's name?",
+      filter: input => {
+        return input.trim();
+      }
     }
   ],
   addRoleQ: [
     {
       type: "input",
       name: "title",
-      message: "What role do you want to newly add?"
+      message: "What role do you want to newly add?",
+      filter: input => {
+        return input.trim();
+      }
     },
     {
       type: "input",
       name: "salary",
-      message: "How much is this role's salary?"
+      message: "How much is this role's salary?",
+      validate: input => {
+        return !isNaN(input);
+      },
+      filter: input => {
+        return input.trim();
+      }
     },
     {
       type: "list",
@@ -241,3 +271,14 @@ exports.getAnswer = async category => {
 
   return await inquirer.prompt(q);
 };
+
+function nameValidator(name) {
+  if (name === undefined) return "No input entered. Please enter a valid name.";
+
+  let verdit = true;
+  for (char of name.trim()) {
+    if (!/[a-zA-Z ]/.test(char))
+      verdit = "Invalid input. Please enter a valid name.";
+  }
+  return verdit;
+}
