@@ -81,7 +81,7 @@ module.exports = {
   deleteDept: `DELETE FROM department WHERE name = ?`,
   deleteRole: `DELETE FROM role WHERE title = ?`,
   checkSalaryByDept: `SELECT 
-                            IFNULL(name, 'no dept') AS department, SUM(salary) AS total
+                            IFNULL(name, 'no dept') AS department, IFNULL(SUM(salary),0) AS total
                         FROM
                             employee
                                 LEFT JOIN

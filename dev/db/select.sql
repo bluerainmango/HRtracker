@@ -105,7 +105,7 @@ DELETE FROM role WHERE title = ?
 
 -- Check the total salaries of each department
 SELECT 
-    IFNULL(name, 'no dept') AS department, SUM(salary) AS total
+    IFNULL(name, 'no dept') AS department, IFNULL(SUM(salary),0) AS total
 FROM
     employee
         LEFT JOIN
