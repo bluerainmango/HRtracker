@@ -1,5 +1,6 @@
 const dotenv = require("dotenv");
 const path = require("path");
+const figlet = require("figlet");
 require("console.table");
 
 // Connect to DB
@@ -17,6 +18,15 @@ const { refreshChoices, getAnswer } = require("./dev/inquirer");
 //! FUCTION : init
 const init = async () => {
   let loop = true;
+
+  // APP Logo print
+  console.log(
+    figlet.textSync(" HR Tracker", {
+      font: "ANSI Shadow",
+      horizontalLayout: "default",
+      verticalLayout: "default"
+    })
+  );
 
   // Dynamically fill questions' choices with latest data
   do {
@@ -124,15 +134,15 @@ const showTable = async (db, choice, query, args) => {
       break;
 
     case "Add":
-      console.log("Successfully Added!");
+      console.log("👍 Successfully Added!");
       break;
 
     case "Update":
-      console.log("Successfully Updated!");
+      console.log("👍 Successfully Updated!");
       break;
 
     case "Delete":
-      console.log("Successfully Deleted!");
+      console.log("👍 Successfully Deleted!");
       break;
 
     case "Check":
