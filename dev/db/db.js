@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const { promisify } = require("util");
 
+//! Function connecting to DB and getting query() & end() methods(promises) that suitable to be used with asyc/await later
 function createDB() {
   const connection = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -12,7 +13,6 @@ function createDB() {
 
   connection.connect(err => {
     if (err) throw err;
-    // console.log("connected as id " + connection.threadId);
   });
 
   return {
@@ -26,24 +26,3 @@ function createDB() {
 }
 
 module.exports = createDB;
-
-// const connection = mysql.createConnection({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_DATABASE,
-//   multipleStatements: true
-// });
-
-// module.exports = (() => {
-//   connection.connect(err => {
-//     if (err) {
-//       console.error("error connecting: " + err.stack);
-//       return;
-//     }
-
-//     console.log("connected as id " + connection.threadId);
-//   });
-
-//   return connection;
-// })();

@@ -3,7 +3,7 @@ const inquirer = require("inquirer");
 const createDB = require("./db/db");
 const query = require("./db/query");
 
-// Dynamically fill questions' choices with data
+//! [Choice refresher] Dynamically fill questions' choices with data at every main question loop
 exports.refreshChoices = async () => {
   const db = createDB();
 
@@ -16,11 +16,9 @@ exports.refreshChoices = async () => {
     "SELECT name AS department FROM department"
   );
 
-  //2. Fill each question's choices with data
+  // 2. Fill each question's choices with data
   roles.forEach(el => {
     questions.addEmployeeQ[2].choices.push(el.title);
-    // console.log("updateRole: ", questions.updateRoleQ[1].choices);
-    // questions.updateRoleQ[1].choices.push(el.title);
     questions.deleteRoleQ[0].choices.push(el.title);
   });
 
@@ -37,26 +35,26 @@ exports.refreshChoices = async () => {
   });
 
   //* [Special case] addEmployeeQ - 3rd question's choices
-  // Add none.
+  // : Add none.
   if (!questions.addEmployeeQ[3].choices.includes("none")) {
     questions.addEmployeeQ[3].choices.unshift("none");
   }
 
   //* [Special case] updateRoleQ - 2nd question's choices func
-  // Show all roles except current person's role.
+  // : Show all roles except the current person's role.
   questions.updateRoleQ[1].choices = async answers => {
     const rows = await db.query(query.getAllRolesExcept, answers.employee);
 
     const rolesArr = rows.map(row => {
       return row.title;
     });
-    console.log("roles: ", rows);
+
     // Delete duplicated roles
     return Array.from(new Set(rolesArr));
   };
 
   //* [Special case] updateManagerQ - 2nd question's choice func
-  // Show all employees except himself/herself.
+  // : Show all employees except himself/herself.
   questions.updateManagerQ[1].choices = answers => {
     return questions.updateManagerQ[0].choices.filter(
       el => el !== answers.employee
@@ -66,6 +64,7 @@ exports.refreshChoices = async () => {
   // db.end();
 };
 
+//! [Questions]
 const questions = {
   mainQ: [
     {
@@ -194,6 +193,7 @@ const questions = {
   ]
 };
 
+//! [Inquirer prompter] Prompt inquiries in CLI with proper questions
 exports.getAnswer = async category => {
   let q = [];
 
@@ -231,6 +231,10 @@ exports.getAnswer = async category => {
       break;
 
     case "deleteRole":
+      q = questions.deleteRoleQ;
+      break;
+
+    case "checkSalary":
       q = questions.deleteRoleQ;
       break;
   }

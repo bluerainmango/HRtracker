@@ -8,39 +8,13 @@ const createDB = require("./dev/db/db");
 // Bring queries
 const query = require("./dev/db/query");
 
+// Set env
 dotenv.config({ path: path.join(__dirname, "config.env") });
 
-// Inquirer
+// Import Inquirer
 const { refreshChoices, getAnswer } = require("./dev/inquirer");
 
-//* FUNCTION : Get query and print it in table
-const showTable = async (db, choice, query, args) => {
-  const result = await db.query(query, args);
-
-  switch (choice.split(" ")[0]) {
-    case "View":
-      console.table("\n", result);
-      break;
-
-    case "Add":
-      console.log("Successfully Added!");
-      break;
-
-    case "Update":
-      console.log("Successfully Updated!");
-      break;
-
-    case "Delete":
-      console.log("Successfully Deleted!");
-      break;
-
-    default:
-      db.end();
-      break;
-  }
-};
-
-//* FUCTION : init
+//! FUCTION : init
 const init = async () => {
   let loop = true;
 
@@ -49,10 +23,10 @@ const init = async () => {
     await refreshChoices();
     const { mainQ } = await getAnswer("main");
 
-    // Connect DB for query
+    // Connect DB and import connection.query(), connection.end() methods
     const db = createDB();
 
-    // According to answer of main question, print query or conseuqent questions.
+    // Based on the answer to the main question, print query or continue to following questions.
     switch (mainQ) {
       case "View all employees":
         await showTable(db, mainQ, query.getAllEmployees);
@@ -130,27 +104,45 @@ const init = async () => {
 
         break;
 
+      case "Check the total salaries of each department":
+        await showTable(db, mainQ, query.checkSalaryByDept);
+
+        break;
+
       case "Exit":
+        // Stop looping the prompt then end database and process
         loop = false;
         db.end();
-        break;
+        process.exit(0);
     }
   } while (loop);
+};
 
-  // const addEmployeeAnswers = await getAnswer(addEmployeeQ);
-  // const addRoleAnswers = await getAnswer(addRoleQ);
-  // const updateRoleAnswers = await getAnswer(updateRoleQ);
-  // const updateManagerAnswers = await getAnswer(updateManagerQ);
-  // const deleteEmployeeAnswers = await getAnswer(deleteEmployeeQ);
-  // const deleteDepartmentAnswers = await getAnswer(deleteDepartmentQ);
-  // const deleteRoleAnswers = await getAnswer(deleteRoleQ);
-  // console.log(addEmployeeAnswers);
-  // console.log(addRoleAnswers);
-  // console.log(updateRoleAnswers);
-  // console.log(updateManagerAnswers);
-  // console.log(deleteEmployeeAnswers);
-  // console.log(deleteDepartmentAnswers);
-  // console.log(deleteRoleAnswers);
+//! UTILL FUNCTION : Get query result and print it in console table
+const showTable = async (db, choice, query, args) => {
+  const result = await db.query(query, args);
+
+  switch (choice.split(" ")[0]) {
+    case "View":
+      console.table("\n", result);
+      break;
+
+    case "Add":
+      console.log("Successfully Added!");
+      break;
+
+    case "Update":
+      console.log("Successfully Updated!");
+      break;
+
+    case "Delete":
+      console.log("Successfully Deleted!");
+      break;
+
+    case "Check":
+      console.table("\n", result);
+      break;
+  }
 };
 
 init();
