@@ -51,6 +51,9 @@ module.exports = (() => {
         role ON role.id = e.role_id
             LEFT JOIN
         department ON department.id = role.department_id
-    ORDER BY CASE when manager = "" THEN 1 ELSE 0 END, manager`
+    ORDER BY CASE when manager = "" THEN 1 ELSE 0 END, manager`,
+    addEmployee: `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+    VALUES (?, ?, (SELECT id FROM role WHERE title = ?),(SELECT id FROM (SELECT * FROM employee) AS copiedEmployee WHERE CONCAT(first_name, " ", last_name) = ?));`,
+    addDepartment: `INSERT INTO department SET name = ?`
   };
 })();

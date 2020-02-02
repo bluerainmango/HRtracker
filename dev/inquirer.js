@@ -8,11 +8,11 @@ exports.refreshChoices = async () => {
   const db = createDB();
 
   // 1. Bring data from DB
-  const roles = await db.getQuery("SELECT title FROM role");
-  const employees = await db.getQuery(
+  const roles = await db.query("SELECT title FROM role");
+  const employees = await db.query(
     "SELECT CONCAT(first_name, ' ' , last_name) AS name FROM employee"
   );
-  const departments = await db.getQuery(
+  const departments = await db.query(
     "SELECT name AS department FROM department"
   );
 
@@ -38,12 +38,14 @@ exports.refreshChoices = async () => {
 
   //* [Special case] addEmployeeQ - 3rd question's choices
   // Add none.
-  questions.addEmployeeQ[2].choices.unshift("none");
+  if (!questions.addEmployeeQ[3].choices.includes("none")) {
+    questions.addEmployeeQ[3].choices.unshift("none");
+  }
 
   //* [Special case] updateRoleQ - 2nd question's choices func
   // Show all roles except current person's role.
   questions.updateRoleQ[1].choices = async answers => {
-    const rows = await db.getQuery(query.getAllRolesExcept, answers.employee);
+    const rows = await db.query(query.getAllRolesExcept, answers.employee);
 
     const rolesArr = rows.map(row => {
       return row.title;
@@ -67,7 +69,7 @@ const questions = {
   mainQ: [
     {
       type: "list",
-      name: "mainQuestion",
+      name: "mainQ",
       message: "What would you like to do?",
       choices: [
         "View all employees",

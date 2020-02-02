@@ -14,11 +14,30 @@ dotenv.config({ path: path.join(__dirname, "config.env") });
 const { refreshChoices, getAnswer } = require("./dev/inquirer");
 
 //* FUNCTION : Get query and print it in table
-const showTable = async (db, query) => {
-  const result = await db.getQuery(query);
-  // console.log("query: ", query);
-  // console.log("result: ", result);
-  console.table("\n", result);
+const showTable = async (db, choice, query, args) => {
+  const result = await db.query(query, args);
+
+  switch (choice.split(" ")[0]) {
+    case "View":
+      console.table("\n", result);
+      break;
+
+    case "Add":
+      console.log("Successfully Added!");
+      break;
+
+    case "Update":
+      console.log("Successfully Updated!");
+      break;
+
+    case "Delete":
+      console.log("Successfully Deleted!");
+      break;
+
+    default:
+      break;
+  }
+
   db.end();
 };
 
@@ -29,35 +48,48 @@ const init = async () => {
   // Dynamically fill questions' choices with latest data
   do {
     await refreshChoices();
-    const answerTo = await getAnswer("main");
+    const { mainQ } = await getAnswer("main");
 
     // Connect DB for query
     const db = createDB();
 
     // According to answer of main question, print query or conseuqent questions.
-    switch (answerTo.mainQuestion) {
+    switch (mainQ) {
       case "View all employees":
-        await showTable(db, query.getAllEmployees);
+        await showTable(db, mainQ, query.getAllEmployees);
         break;
 
       case "View all departments":
-        await showTable(db, query.getAllDepartments);
+        await showTable(db, mainQ, query.getAllDepartments);
         break;
 
       case "View all roles":
-        await showTable(db, query.getAllRoles);
+        await showTable(db, mainQ, query.getAllRoles);
         break;
 
       case "View all employees by department":
-        await showTable(db, query.getAllEmployeesByDept);
+        await showTable(db, mainQ, query.getAllEmployeesByDept);
         break;
 
       case "View all employees by manager":
-        await showTable(db, query.getAllEmployeesByManager);
+        await showTable(db, mainQ, query.getAllEmployeesByManager);
         break;
 
-      case "View all employees by manager":
-        await showTable(db, query.getAllEmployeesByManager);
+      case "Add an employee":
+        const { fname, lname, role, manager } = await getAnswer("addEmployee");
+
+        await showTable(db, mainQ, query.addEmployee, [
+          fname,
+          lname,
+          role,
+          manager
+        ]);
+        break;
+
+      case "Add a department":
+        const { department } = await getAnswer("addDepartment");
+
+        await showTable(db, mainQ, query.addDepartment, [department]);
         break;
 
       case "Exit":
