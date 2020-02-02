@@ -26,3 +26,5 @@ Manage the departments, roles and employees in companies to keep track of curren
   - Check the total salaries of each department
 
 ## 🌟 Demo
+
+![screenshot](demo.gif)
