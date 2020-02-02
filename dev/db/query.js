@@ -70,6 +70,8 @@ module.exports = {
                     (SELECT id FROM (SELECT * FROM employee) AS copiedEmployee 
                 WHERE CONCAT(first_name, " ", last_name) = ?))`,
   addDepartment: `INSERT INTO department SET name = ?`,
+  addRole: `INSERT INTO role (title, salary, department_id)
+  VALUES (?,?,(SELECT id FROM department WHERE name = ?))`,
   updateEmployeeRole: `UPDATE employee SET role_id = (SELECT id FROM role WHERE title = ?) 
                         WHERE CONCAT(first_name, " ", last_name) = ?`,
   updateEmployeeManager: `UPDATE employee SET manager_id = (SELECT id FROM (SELECT * FROM employee) AS copied 

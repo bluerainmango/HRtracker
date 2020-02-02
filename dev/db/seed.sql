@@ -30,7 +30,7 @@ VALUES("Irene", "Kim", 1, null),
         ("Andy", "Cho", 8, null),
         ("Emily", "Yu", 9, 7),
         ("Asada","Mao",11,null),
-        ("Adam","Tank",10,7);
+        ("Amanda","Tank",10,7);
 
  
 

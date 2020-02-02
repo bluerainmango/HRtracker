@@ -35,7 +35,7 @@ exports.refreshChoices = async () => {
   });
 
   //* [Special case] addEmployeeQ - 3rd question's choices
-  // : Add none.
+  // : Add "none".
   if (!questions.addEmployeeQ[3].choices.includes("none")) {
     questions.addEmployeeQ[3].choices.unshift("none");
   }
@@ -134,7 +134,7 @@ const questions = {
     },
     {
       type: "list",
-      name: "department",
+      name: "deptOfRole",
       message: "What department does this role belong to?",
       choices: []
     }
@@ -157,7 +157,7 @@ const questions = {
     {
       type: "list",
       name: "employeeToUpdateManager",
-      message: "whos manager do you want to change?",
+      message: "Who's manager do you want to change?",
       choices: []
     },
     {

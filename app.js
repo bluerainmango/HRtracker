@@ -56,13 +56,16 @@ const init = async () => {
           role,
           manager
         ]);
-
         break;
 
       case "Add a department":
         const { department } = await getAnswer("addDepartment");
         await showTable(db, mainQ, query.addDepartment, [department]);
+        break;
 
+      case "Add a role":
+        const { title, salary, deptOfRole } = await getAnswer("addRole");
+        await showTable(db, mainQ, query.addRole, [title, salary, deptOfRole]);
         break;
 
       case "Update employee's role":
@@ -71,42 +74,35 @@ const init = async () => {
           newRole,
           employee
         ]);
-
         break;
 
       case "Update employee's manager":
         const { employeeToUpdateManager, newManager } = await getAnswer(
           "updateManager"
         );
-
         await showTable(db, mainQ, query.updateEmployeeManager, [
           newManager,
           employeeToUpdateManager
         ]);
-
         break;
 
       case "Delete an employee":
         const { employeeToDel } = await getAnswer("deleteEmployee");
         await showTable(db, mainQ, query.deleteEmployee, [employeeToDel]);
-
         break;
 
       case "Delete a department":
         const { deptToDel } = await getAnswer("deleteDepartment");
         await showTable(db, mainQ, query.deleteDept, [deptToDel]);
-
         break;
 
       case "Delete a role":
         const { roleToDel } = await getAnswer("deleteRole");
         await showTable(db, mainQ, query.deleteRole, [roleToDel]);
-
         break;
 
       case "Check the total salaries of each department":
         await showTable(db, mainQ, query.checkSalaryByDept);
-
         break;
 
       case "Exit":
