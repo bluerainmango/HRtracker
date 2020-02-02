@@ -16,7 +16,7 @@ const { refreshChoices, getAnswer } = require("./dev/inquirer");
 //* FUNCTION : Get query and print it in table
 const showTable = async (db, choice, query, args) => {
   const result = await db.query(query, args);
-  console.log("result", result);
+
   switch (choice.split(" ")[0]) {
     case "View":
       console.table("\n", result);
@@ -105,11 +105,28 @@ const init = async () => {
           "updateManager"
         );
 
-        console.log("answers", employeeToUpdateManager, newManager);
         await showTable(db, mainQ, query.updateEmployeeManager, [
           newManager,
           employeeToUpdateManager
         ]);
+
+        break;
+
+      case "Delete an employee":
+        const { employeeToDel } = await getAnswer("deleteEmployee");
+        await showTable(db, mainQ, query.deleteEmployee, [employeeToDel]);
+
+        break;
+
+      case "Delete a department":
+        const { deptToDel } = await getAnswer("deleteDepartment");
+        await showTable(db, mainQ, query.deleteDept, [deptToDel]);
+
+        break;
+
+      case "Delete a role":
+        const { roleToDel } = await getAnswer("deleteRole");
+        await showTable(db, mainQ, query.deleteRole, [roleToDel]);
 
         break;
 

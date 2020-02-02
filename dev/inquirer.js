@@ -171,7 +171,7 @@ const questions = {
   deleteEmployeeQ: [
     {
       type: "list",
-      name: "employee",
+      name: "employeeToDel",
       message: "who do you want to delete?",
       choices: []
     }
@@ -179,7 +179,7 @@ const questions = {
   deleteDepartmentQ: [
     {
       type: "list",
-      name: "department",
+      name: "deptToDel",
       message: "Which department do you want to delete?",
       choices: []
     }
@@ -187,7 +187,7 @@ const questions = {
   deleteRoleQ: [
     {
       type: "list",
-      name: "role",
+      name: "roleToDel",
       message: "Which role do you want to delete?",
       choices: []
     }

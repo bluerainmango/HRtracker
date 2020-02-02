@@ -67,6 +67,9 @@ module.exports = (() => {
     VALUES (?, ?, (SELECT id FROM role WHERE title = ?),(SELECT id FROM (SELECT * FROM employee) AS copiedEmployee WHERE CONCAT(first_name, " ", last_name) = ?))`,
     addDepartment: `INSERT INTO department SET name = ?`,
     updateEmployeeRole: `UPDATE employee SET role_id = (SELECT id FROM role WHERE title = ?) WHERE CONCAT(first_name, " ", last_name) = ?`,
-    updateEmployeeManager: `UPDATE employee SET manager_id = (SELECT id FROM (SELECT * FROM employee) AS copied WHERE CONCAT(first_name, " ", last_name) = ?) WHERE CONCAT(first_name, " ", last_name) = ?`
+    updateEmployeeManager: `UPDATE employee SET manager_id = (SELECT id FROM (SELECT * FROM employee) AS copied WHERE CONCAT(first_name, " ", last_name) = ?) WHERE CONCAT(first_name, " ", last_name) = ?`,
+    deleteEmployee: `DELETE FROM employee WHERE CONCAT(first_name, " ", last_name) = ?`,
+    deleteDept: `DELETE FROM department WHERE name = ?`,
+    deleteRole: `DELETE FROM role WHERE title = ?`
   };
 })();
