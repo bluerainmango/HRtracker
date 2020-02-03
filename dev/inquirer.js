@@ -137,6 +137,7 @@ const questions = {
       type: "input",
       name: "department",
       message: "What is the new department's name?",
+      validate: uniqueValidator("department", "name"),
       filter: input => {
         return input.trim();
       }
@@ -147,6 +148,7 @@ const questions = {
       type: "input",
       name: "title",
       message: "What role do you want to newly add?",
+      validate: uniqueValidator("role", "title"),
       filter: input => {
         return input.trim();
       }
@@ -272,6 +274,7 @@ exports.getAnswer = async category => {
   return await inquirer.prompt(q);
 };
 
+//! Validation functions
 function nameValidator(name) {
   if (name === undefined) return "No input entered. Please enter a valid name.";
 
@@ -281,4 +284,17 @@ function nameValidator(name) {
       verdit = "Invalid input. Please enter a valid name.";
   }
   return verdit;
+}
+
+function uniqueValidator(table, column) {
+  return async answer => {
+    const db = createDB();
+    const results = await db.query(
+      `SELECT ${column} FROM ${table} WHERE ${column} = "${answer}"`
+    );
+    if (results.length > 0) {
+      return `The ${table} having the same name already exists. The ${column} should be unique.`;
+    }
+    return true;
+  };
 }

@@ -3,6 +3,12 @@ const path = require("path");
 const figlet = require("figlet");
 require("console.table");
 
+//! Uncaught exception error handling:
+// process.on("uncaughtException", err => {
+//   console.log("🚧 Error: ", err.message);
+//   process.exit(1);
+// });
+
 const { catchAsync, showTable } = require("./dev/util/util");
 
 // Connect to DB
@@ -18,7 +24,7 @@ dotenv.config({ path: path.join(__dirname, "config.env") });
 const { refreshChoices, getAnswer } = require("./dev/inquirer");
 
 //! FUCTION : init
-const init = catchAsync(async () => {
+const init = async () => {
   let loop = true;
 
   //* APP Logo print
@@ -122,12 +128,13 @@ const init = catchAsync(async () => {
         process.exit(0);
     }
   } while (loop);
-});
+};
 
 init();
 
 //! Unhandled rejection error handling : hide error stack and print a general error message
-process.on("unhandledRejection", err => {
-  console.log(err.message);
-  process.exit(1);
-});
+// process.on("unhandledRejection", err => {
+//   console.log(err.message);
+//   db.end();
+//   process.exit(1);
+// });

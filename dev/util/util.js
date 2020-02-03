@@ -3,7 +3,7 @@ const catchAsync = fn => {
   return (...arg) => {
     fn(...arg).catch(err => {
       const error = new Error(
-        "🚨 Error occured! Please try again later or report the issue."
+        "🚨 Error occured from database or prompt! Please try again later or report the issue."
       );
       throw error;
     });
