@@ -4,10 +4,10 @@ const figlet = require("figlet");
 require("console.table");
 
 //! Uncaught exception error handling:
-// process.on("uncaughtException", err => {
-//   console.log("🚧 Error: ", err.message);
-//   process.exit(1);
-// });
+process.on("uncaughtException", err => {
+  console.log("🚧 Error: ", err.message);
+  process.exit(1);
+});
 
 const { catchAsync, showTable } = require("./dev/util/util");
 
@@ -24,7 +24,7 @@ dotenv.config({ path: path.join(__dirname, "config.env") });
 const { refreshChoices, getAnswer } = require("./dev/inquirer");
 
 //! FUCTION : init
-const init = async () => {
+const init = catchAsync(async () => {
   let loop = true;
 
   //* APP Logo print
@@ -89,6 +89,7 @@ const init = async () => {
 
       case "Update employee's role":
         const { employee, newRole } = await getAnswer("updateEmployeeRole");
+
         showTable(db, mainQ, query.updateEmployeeRole, [newRole, employee]);
         break;
 
@@ -128,13 +129,13 @@ const init = async () => {
         process.exit(0);
     }
   } while (loop);
-};
+});
 
 init();
 
 //! Unhandled rejection error handling : hide error stack and print a general error message
-// process.on("unhandledRejection", err => {
-//   console.log(err.message);
-//   db.end();
-//   process.exit(1);
-// });
+process.on("unhandledRejection", err => {
+  console.log(err.message);
+  db.end();
+  process.exit(1);
+});

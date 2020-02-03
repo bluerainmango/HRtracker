@@ -1,4 +1,17 @@
 //! UTIL FUNCTION : Add .catch() block to asynchronous functions
+// const catchAsync = fn => {
+//   return (...arg) => {
+//     try {
+//       fn(...arg);
+//     } catch (err) {
+//       const error = new Error(
+//         "🚨 Error occured from database or prompt! Please try again later or report the issue."
+//       );
+//       throw error;
+//     }
+//   };
+// };
+
 const catchAsync = fn => {
   return (...arg) => {
     fn(...arg).catch(err => {
