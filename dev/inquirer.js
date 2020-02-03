@@ -156,7 +156,7 @@ const questions = {
       name: "salary",
       message: "How much is this role's salary?",
       validate: input => {
-        return !isNaN(input);
+        return isNaN(input) ? "Invalid input. Please enter a number" : true;
       },
       filter: input => {
         return input.trim();
