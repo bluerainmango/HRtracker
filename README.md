@@ -11,7 +11,7 @@ Manage the departments, roles and employees in companies to keep track of curren
 1. Start the server on your local machine.
 2. Create database, schema and insert data to created tables(MySQL).
    - Utilize schema.sql, seed.sql files in `dev > db` folder.
-3. Run the app by entering `npm start` in CLI.
+3. Run the app by entering `node app.js` or `npm start` in CLI.
 4. If you want to exit while running the app, select 'Exit' on the first menu or press `ctrl + c` at anytime.
 
 ## 🔑 Feature
@@ -24,6 +24,11 @@ Manage the departments, roles and employees in companies to keep track of curren
   - Update employee's role or manager
   - Delete an employee, department, role
   - Check the total salaries of each department
+- Department and role's name should be unique.
+
+## 🛑 Limitation
+
+You can insert the multiple employees having a same full name but it's not recommended. This app's database is structured utilizing mostly names not unique key. So duplicated names may cause an error or unintended consequences when manipulating their data.
 
 ## 🌟 Demo
 
