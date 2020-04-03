@@ -9,10 +9,11 @@ Manage the departments, roles and employees in companies to keep track of curren
 ## ❓ How to use
 
 1. Start the server on your local machine.
-2. Create database, schema and insert data to created tables(MySQL).
+2. Modify test.env file with your mySQL database configuration.
+3. Create database, schema and insert data to created tables(MySQL).
    - Utilize schema.sql, seed.sql files in `dev > db` folder.
-3. Run the app by entering `node app.js` or `npm start` in CLI.
-4. If you want to exit while running the app, select 'Exit' on the first menu or press `ctrl + c` at anytime.
+4. Run the app by entering `node app.js` or `npm start` in CLI.
+5. If you want to exit while running the app, select 'Exit' on the first menu or press `ctrl + c` at anytime.
 
 ## 🔑 Feature
 
