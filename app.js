@@ -18,7 +18,7 @@ const createDB = require("./dev/db/db");
 const query = require("./dev/db/query");
 
 // Set env
-dotenv.config({ path: path.join(__dirname, "config.env") });
+dotenv.config({ path: path.join(__dirname, "test.env") });
 
 // Import Inquirer
 const { refreshChoices, getAnswer } = require("./dev/inquirer");
