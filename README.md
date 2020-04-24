@@ -2,6 +2,10 @@
 
 > CMS(Content Management System) for Human Resource
 
+## 📌 Used skills
+
+MySQL, Node.js, Express
+
 ## 🎯 Purpose
 
 Manage the departments, roles and employees in companies to keep track of current business situation.
